@@ -7,12 +7,17 @@ exports.getMockedProfile = function () {
 
   newProfile.addSubscription(new profile.Subscription({
     id: 'e33f361b-53c2-4cc7-b829-78906708387b',
+    managementCertificate: {
+      key: 'mockedKey',
+      cert: 'mockedCert'
+    },
     name: 'Microsoft Azure Internal Consumption',
     user: {
       name: 'user@domain.example',
       type: 'servicePrincipal'
     },
     tenantId: '72f988bf-86f1-41af-91ab-2d7cd011db47',
+    state: 'Enabled',
     registeredProviders: [],
     isDefault: true
   }, newProfile.environments['AzureCloud']));

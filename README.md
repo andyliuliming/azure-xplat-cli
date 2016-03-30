@@ -4,68 +4,47 @@
 
 This project provides a cross-platform command line interface for developers and IT administrators to develop, deploy and manage Microsoft Azure applications.
 
-## Known issues
-[Updated on Oct 29, 2015]
-* If you installed 'azure-cli' using the option of 'npm install', before use it please remove the ".streamline" folder under your home directory. We have received several reports that the folder might contain stale files causing odd errors, such as [this issue](https://github.com/Azure/azure-xplat-cli/issues/2196). Based on the OS, the folder locations are:
-  * Windows: %HOMEPATH%\\.streamline
-  * OSX or Unix: $HOME/.streamline
-
 ## Features
 
-* Accounts
-    * Azure Active Directory authentication
-    * Download and import Azure publish settings
-    * List imported Azure subscriptions
-    * Select current subscription
-    * Manage Azure environments
-    * Create and manage affinity groups
-    * Export management certificate
-* Storage
-    * Create and manage Storage Accounts
-    * Create and manage container, blob and ACL
-* Websites
-    * Create and manage Microsoft Azure websites
-    * Download site log files and get real time log streaming
-    * Manage Deployments
-    * Configure GitHub integration
-    * Create, manage and swap slots
-    * Create and manage WebJobs
-* Virtual machines
-    * Create and manage Windows and Linux Virtual machines
-    * Create and manage VM endpoints
-    * Create and manage Virtual Machine Images
-    * Create and manage certificates
-    * CloudInit for Ubuntu VM
-    * Create and manage Docker host virtual machines
-    * Create and manage VM extensions
-* Network
-    * Import and export network configuration
-    * Create and manage virtual network
-    * Create and manage DNS server
-    * Create and manage reserved IP addresses
-* Mobile Services
-    * Create and manage Mobile Services
-    * Manage tables, scripts, and configuration
-    * Access logs
-    * Access data
-    * Add custom domains and enable SSL
-* Service Bus
-    * Create and manage Service Bus namespaces
-* SQL Database
-    * Create and manage SQL Servers, Firewall rules and Databases
-* Resource Manager
-    * Manage resource groups and deployments
-    * Query and download gallery templates
-    * Manage individual resources
+* Accounts Management
+* Azure Service Management
+  * Storage
+  * Websites
+  * Virtual machines
+  * Network
+  * Mobile Services
+  * Service Bus
+  * SQL Database
+* Azure Resource Management
+  * Generic resource groups and deployments management
+  * Role based access control
+  * Cmdlets for individual resource providers, including compute, storage, network, redis cache, insights, etc.
+  * Datalake
 * Key Vault
-    * Create and manage vaults, assign permissions to vaults
-    * Create and manage vault keys, import PEM files into a vault key, obtain key backups
-    * Create and manage secrets, set and retrieve secret values
-* Redis Cache
-    * Create and manage Redis Caches
-    * List or Renew authentication keys
+
+For comdlets detail, type "azure" to navigate through the help system. Also, use `azure config mode` to switch between service management and resource management.
+
+## Endpoints for Azure
+
+The CLI targets **"Public Azure Cloud"** by default. You can get more information about the endpoints supported in different environments from [here](./Documentation/Endpoints.md).
+
+## Non-Interactive Authentication
+If you need to create an automation account for non interactive or scripting scenarios then please take a look at the documentation over [here](https://github.com/Azure/azure-sdk-for-node/blob/autorest/Documentation/Authentication.md).
+
 
 ## Installation
+
+### Installation from a particular branch of this repository
+- Uninstall the previously installed CLI
+   - If you installed via MSI, then uninstall the windows MSI. For mac installer `sudo azure-uninstall -g`
+   - If you installed via npm then execute: `npm uninstall azure-cli –g`
+- Clear the global cache: `npm cache clear –g`
+- Delete the .streamline folder from the User’s home profile `C:\Users\<username>\.streamline` | `~/.streamline`, if present.
+- Download the tarball from this link: `https://github.com/Azure/azure-xplat-cli/archive/<branch-name>.tar.gz`
+- Install from the tarball: `npm install –g <path to the downloaded tarball>`
+
+And you should be good to go :). 
+Note: You may require admin prompt or sudo access to install via npm.
 
 ### Install from npm
 
@@ -110,16 +89,6 @@ sudo docker run -it microsoft/azure-cli
 * [Mac](http://aka.ms/mac-azure-cli) 
 * [Linux](http://aka.ms/linux-azure-cli)
 
-### Download Source Code
-
-You can also install the Azure Xplat-CLI from sources using **git**  and **npm**.
-
-```bash
-git clone https://github.com/Azure/azure-xplat-cli.git
-cd ./azure-xplat-cli
-npm install
-bin/azure <command>
-```
 
 ### Configure auto-complete
 
@@ -141,7 +110,7 @@ echo 'source ~/azure.completion.sh' >> ~/.bash_profile
 ## Get Started
 
 * First, get authenticated with Microsoft Azure. For details, read [this article](http://azure.microsoft.com/en-us/documentation/articles/xplat-cli/).
-  * Option 1: Login with your Organizational account. Azure Active Directory authentication is used in this case. No management certificate is needed. **Note**: Authentication with a Microsoft account is not supported at this time. You can create a free Organizational account in the Azure portal for use in the CLI.
+  * Option 1: Login with your Microsoft account, such as live-id, or organizational account, or service principals.
   * Option 2: Download and import a publish settings file which contains a management certificate.
 
 If you use both mechanisms on the same subscription, Azure Active Directory authentication will be used by default. If you want to go back to management certificate authentication, please use ``azure logout``, which will remove the Azure Active Directory information and bring management certificate authentication back in.
@@ -149,11 +118,14 @@ If you use both mechanisms on the same subscription, Azure Active Directory auth
 #### Login directly from xplat-cli (Azure Active Directory authentication)
 
 ```bash
+# This will output an url and a device code for you to use browser to login  
+azure login
+
 # This will prompt for your password in the console
 azure login -u <your organizational ID email address>
 
-# use the commands to manage your services/applications
-azure site create --location "West US" mywebsite
+# This will login in using a service principal
+azure login -u "<service-principal-id>" -p "<key>" --service-principal --tenant "<tenant-id>"
 ```
 
 #### Use publish settings file (Management certificate authentication)
@@ -248,7 +220,7 @@ For documentation on how to host Node.js applications on Microsoft Azure, please
 
 ## Contribute Code or Provide Feedback
 
-If you would like to become an active contributor to this project please follow the instructions provided in [Microsoft Azure Projects Contribution Guidelines](http://windowsazure.github.com/guidelines.html).
+If you would like to become an active contributor to this project please follow the instructions provided in [Microsoft Azure Projects Contribution Guidelines](http://azure.github.io/guidelines/).
 
 Please send pull requests only to the **Dev branch**. Please make sure that you have checked in tests and recorded them live for your contribution. **Pull requests without sufficient tests will not be accepted.**
 

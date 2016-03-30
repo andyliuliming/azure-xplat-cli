@@ -12,41 +12,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 'use strict';
 
 var should = require('should');
 var util = require('util');
+var _ = require('underscore');
+
 var testUtils = require('../../../util/util');
 var CLITest = require('../../../framework/arm-cli-test');
-var testprefix = 'arm-network-dns-zone-tests';
-var networkTestUtil = require('../../../util/networkTestUtil');
-var groupName,
-  location,
-  groupPrefix = 'xplatTestGCreateDns',
-  dnszonePrefix = 'xplattestgcreatedns.xplattestdns',
-  tag = 'priority=medium;size=high';
+var NetworkTestUtil = require('../../../util/networkTestUtil');
+var networkUtil = new NetworkTestUtil();
+
+var testPrefix = 'arm-network-dns-zone-tests',
+  groupName = 'xplat-test-dns-zone',
+  location;
+
+var zoneProp = {
+  name: 'example1.com',
+  importPath: 'test/data/zone_file_import.txt',
+  exportPath: 'test/data/zone_file_export.txt',
+  tags: networkUtil.tags,
+  newTags: networkUtil.newTags
+};
+
 var requiredEnvironment = [{
   name: 'AZURE_VM_TEST_LOCATION',
   defaultValue: 'southeastasia'
 }];
 
-
 describe('arm', function () {
   describe('network', function () {
-    var suite,
-      retry = 5;
-    var networkUtil = new networkTestUtil();
+    var suite, retry = 5;
+
     before(function (done) {
-      suite = new CLITest(this, testprefix, requiredEnvironment);
+      suite = new CLITest(this, testPrefix, requiredEnvironment);
       suite.setupSuite(function () {
         location = process.env.AZURE_VM_TEST_LOCATION;
-        groupName = suite.isMocked ? groupPrefix : suite.generateId(groupPrefix, null);
-        dnszonePrefix = suite.isMocked ? dnszonePrefix : suite.generateId(dnszonePrefix, null);
+        groupName = suite.isMocked ? groupName : suite.generateId(groupName, null);
+
+        zoneProp.location = location;
+        zoneProp.group = groupName;
+
         done();
       });
     });
     after(function (done) {
-      networkUtil.deleteUsedGroup(groupName, suite, function () {
+      networkUtil.deleteGroup(groupName, suite, function () {
         suite.teardownSuite(done);
       });
     });
@@ -58,56 +70,97 @@ describe('arm', function () {
     });
 
     describe('dns zone', function () {
-      it('create should pass', function (done) {
+      it('create should create dns zone', function (done) {
         networkUtil.createGroup(groupName, location, suite, function () {
-          var cmd = util.format('network dns zone create %s %s --json', groupName, dnszonePrefix).split(' ');
-          testUtils.executeCommand(suite, retry, cmd, function (result) {
-            result.exitStatus.should.equal(0);
+          networkUtil.createDnsZone(zoneProp, suite, function(zone) {
+            networkUtil.shouldHaveTags(zone);
             done();
           });
-
         });
       });
-
-      it('set should set dns-zone', function (done) {
-        var cmd = util.format('network dns zone set %s %s %s --json', groupName, dnszonePrefix, tag).split(' ');
+      it('set should modify dns zone', function (done) {
+        var cmd = 'network dns zone set -g {group} -n {name} -t {newTags} --json'.formatArgs(zoneProp);
         testUtils.executeCommand(suite, retry, cmd, function (result) {
           result.exitStatus.should.equal(0);
+          var zone = JSON.parse(result.text);
+          zone.name.should.equal(zoneProp.name);
+          networkUtil.shouldAppendTags(zone);
           done();
         });
       });
-
-      it('show should display dns-zone', function (done) {
-        var cmd = util.format('network dns zone show %s %s --json', groupName, dnszonePrefix).split(' ');
+      it('show should display details of dns zone', function (done) {
+        var cmd = 'network dns zone show -g {group} -n {name} --json'.formatArgs(zoneProp);
         testUtils.executeCommand(suite, retry, cmd, function (result) {
           result.exitStatus.should.equal(0);
-          var allresources = JSON.parse(result.text);
-          allresources.name.should.equal(dnszonePrefix);
+          var zone = JSON.parse(result.text);
+          zone.name.should.equal(zoneProp.name);
           done();
         });
       });
-
-      it('list should display all dns-zones', function (done) {
-        var cmd = util.format('network dns zone list %s --json', groupName).split(' ');
+      it('list should display all dns zones in resource group', function (done) {
+        var cmd = 'network dns zone list -g {group} --json'.formatArgs(zoneProp);
         testUtils.executeCommand(suite, retry, cmd, function (result) {
           result.exitStatus.should.equal(0);
-          var allResources = JSON.parse(result.text);
-          allResources.some(function (res) {
-            return res.name === dnszonePrefix;
+          var zones = JSON.parse(result.text);
+          zones.some(function (zone) {
+            return zone.name === zoneProp.name;
           }).should.be.true;
           done();
         });
       });
-
-      it('delete should delete dns-zone', function (done) {
-        var cmd = util.format('network dns zone delete %s %s --quiet --json', groupName, dnszonePrefix).split(' ');
+      it('delete should delete dns zone', function (done) {
+        var cmd = 'network dns zone delete -g {group} -n {name} --quiet --json'.formatArgs(zoneProp);
         testUtils.executeCommand(suite, retry, cmd, function (result) {
           result.exitStatus.should.equal(0);
+
+          cmd = 'network dns zone show -g {group} -n {name} --json'.formatArgs(zoneProp);
+          testUtils.executeCommand(suite, retry, cmd, function (result) {
+            result.exitStatus.should.equal(0);
+            var zone = JSON.parse(result.text);
+            zone.should.be.empty;
+            done();
+          });
+        });
+      });
+      it('import should parse zone file', function (done) {
+        var cmd = 'network dns zone import -g {group} -n {name} -f {importPath} --parse-only --json'.formatArgs(zoneProp);
+        testUtils.executeCommand(suite, retry, cmd, function (result) {
+          result.exitStatus.should.equal(0);
+          var zone = JSON.parse(result.text);
+          zone.should.have.property('sets');
+          // console.log('PARSE ONLY:  %j', zone);
+          // TODO add more validation
           done();
         });
       });
+      it('import should import dns zone from zone file', function (done) {
+        var cmd = 'network dns zone import -g {group} -n {name} -f {importPath} --json'.formatArgs(zoneProp);
+        testUtils.executeCommand(suite, retry, cmd, function (result) {
+          result.exitStatus.should.equal(0);
 
+          networkUtil.listDnsRecordSets(zoneProp, suite, function (sets) {
+            // console.log('RECORD LIST RES:  %j', sets);
+            // TODO add more validation
+            done();
+          });
+        });
+      });
+      it('export should export dns zone to zone file', function (done) {
+        var cmd = 'network dns zone export -g {group} -n {name} -f {exportPath} --quiet --json'.formatArgs(zoneProp);
+        testUtils.executeCommand(suite, retry, cmd, function (result) {
+          result.exitStatus.should.equal(0);
+
+          cmd = 'network dns zone import -g {group} -n {name} -f {exportPath} --parse-only --json'.formatArgs(zoneProp);
+          testUtils.executeCommand(suite, retry, cmd, function (result) {
+            // console.log('EXPORT PARSE RES:  %j', result);
+            result.exitStatus.should.equal(0);
+            var zone = JSON.parse(result.text);
+            zone.should.have.property('sets');
+            // TODO add more validation
+            done();
+          });
+        });
+      });
     });
-
   });
 });

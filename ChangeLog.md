@@ -1,3 +1,153 @@
+##2016-03-11 Version 0.9.18
+* Upgraded Graph to 1.6-internal api-version and consumed it in ad commands
+* Fixed issue #2619, #2616
+* Made role assignment commands work with 1.6-internal
+
+##2016-03-07 Version 0.9.17
+* Fixed login for US Government Environment
+
+##2016-03-03 Version 0.9.16
+* General
+  * Fixed harvesting script bugs
+  * Fixed issues #2560, #2388, #2529, #2530, #1913, #2486,  #2518
+  * Added support for Github issues/pr templates feature
+  * Leap Year Fix for adding years
+  * Fixed broken link for contribution guidelines
+  * Removed apiapp commands
+* Resource Management
+  * Ported ARM cmdlets to use autorest generated resource mgmt client
+  * Fixed display of innerdetail message only when present
+  * Fixed json output issue for deployment create/show
+* Network
+  * Fixed #2493, #1771, #2505, #2510, 2563
+  * Improved tests #2564
+  * --resource-group now optional for 'azure network traffic-manager profile list'
+* VM
+  * Fixed #2502, #2507, #2575, #2546
+  * Support RSA format ssh cert in "vm reset-access" #2437
+  * Fixed reading storage account data vm for enable-aem command
+  * Fix NIC-IP Association Issue #2551
+  * Fixed issue #2524 VM Create License Type Option
+  * Fix #2539 VM Image List/Show
+  * Added test for vm list-usage
+* Redis Cache
+  * Added delete-diagnostics command for redis cache
+  * Added set-diagnostics command to redis cache
+
+## 2016-02-01 Version 0.9.15
+* General
+  * Improved tests and the tests infrastructure #2422, #2433, #2460, #2467, #2468, #2472
+  * Enable login using a service principal with a certificate #2432
+  * Support for adding dash to allowed resource group names #2441
+  * Improved config commands to use common execution flow #2448
+  * Included 4.2.4 in the installer #2450
+  * Ensured auth header is not logged in verbose logging #2451
+  * Ensured stdout gets drained before exit #2470
+  * Provided deprecate message that apiapp commands are going away #2471
+* VM
+  * Chef extension commands can be operated on provided resource groups #2222
+  * Updated vm quick-create, used NRP autoRest-client, & other fixes #2463
+  * Updated AutoRest Compute Lib #2479
+  * Added enable-aem command #2449
+* Network
+  * Improved azure network vpn-gateway create/set/list #2427
+  * Updated azure-arm-TrafficManager package and test nocks #2429
+  * fixed issue in 'nic create' with --public-ip-name #2440
+  * added ability to create connection between Gateways in different resource groups #2445
+  * NIC: test cases fixed to run against live #2476
+  * Improved network dns record-set list output #2477
+  * Fixed nic create #2484
+  * Implemented express-route authorization #2453
+* Storage
+  * Upgrade azure-storage NodeJS NPM module from 0.6.0 to 0.7.0 #2458
+  * Switched to the swagger based REST client lib #2459
+* ARM
+  * Fixed nested template error #2475
+  * Change to use provisioning state instead of statusMessage #2482
+
+## 2016-01-12 Version 0.9.14
+* Insights
+  * Removed retention from insights diagnostic commands 
+* Redis Cache
+  * Added premium sku and other related features option in redis create
+* VM
+  * Added User Image Option for VM Creation
+  * Diagnostics - collect basic metrics when enabling diagnostic extension without specifying a wadcfg file
+  * Updated VM Image Commands
+  * Fixed issue #1487
+* Resource Manager
+  * Support resource move across subscriptions
+* Network
+  * Fixed issue #2366, #2391
+  * Removed --no-tags option from all ARM networking commands
+  * Implemented load balancer rule session persistence 
+  * Implemented VPN connection Shared Key commands
+* Website
+  * Fixed issue #1892
+* KeyVault
+  * Added Key Vault DNS suffix to the AzureUSGovernment environment
+* Role Based Access Control
+  * Updated AAD Application command
+
+## 2015-12-08 Version 0.9.13
+* VM
+  * Chef Extension
+    * Implemented new option --client-pem for set-chef extension commands
+    * Implemented changes for set chef extension client_pem option to provide validator less bootstrap support
+    * Add user-image option for vm creation
+    * Implemented certificates get command
+    * Enable boot-diagnostics by default
+    * Fixed the re-run with the same parameter issue for the set-access command for linux
+    * Added bootstrap_version option for set-chef command
+* Websites
+  * Update kuduscript to v1.0.6
+* DNS
+  * Implemented DNS export
+* Rediscache
+  * cmds use the AutoRest generated clients
+  * Added premium sku and other related features option in redis create
+* HDInsight
+  * Implemented Hdinsight Cluster CRUD ARM commands
+* KeyVault
+  * Added challenge parsing for KeyVault to support multiple environments
+* Datalake
+  * Added tests for datalake cmds
+  * Fixed catalog commands and adding new types to support
+  * Fixed FileSystem ingress/egress to use direct methods which avoid redirect calls
+  * Updated all tests to reflect the above changes, which enabled us to remove the "skips" for the previous redirect problem tests.
+* Mobile Service
+  * Synchronized portal & cli behavior for mobile service deletion
+* Insights
+  * Implemented commands for insights diagnostic get/set
+  * Remove retention from insights diagnostic commands 
+* Resource Manager
+  * Added deployment mode param when creating deployment
+* Network
+  * Fixed issue #2262, #2282, #2288, #2289, #2306, #2309, #2317, #2319, #2322
+  * Made changes to TrafficManager Profile & Endpoints
+  * Zone Export output file formatting fixed
+* Authorization
+  * Set roleDefinition to take complete object instead of partial updated fields.
+  * List, show and delete role definition to take scope param
+  * list and show RoleDefinition to take AtScopeAndBelow param
+  * Use scoped RoleDefinitions in RoleAssignment commands
+* General Improvements
+  * Fixed #2269, #2275, #2285, #2021, #2268
+  * Removed useless ._js file before create installer so to shrink the download size
+
+## 2015.11.18 Version 0.9.12
+* Authorization
+  * Fixed json output format for role definition commands
+  * Fixed roleId in authorization change log command to be a guid
+* DataLake
+  *Fix casing for "requires()" for DataLake* modules, enabling functionality on unix machines.
+  *Fix a bug in catalog item enumeration
+  *Fix a bug in downloading files to support binary files
+  *Fix usage bugs for DataLake* commands.
+  *Fix output logic for readability of internal arrays
+  *Fix a bug in ADLA account creation where ADLS accounts were not properly associated.
+  *Updated switch parameters to properly be treated as switch parameters that do not take a value
+
 ## 2015.10.29 Version 0.9.11
 * Authorization
   * Add paging support for role assignment list calls

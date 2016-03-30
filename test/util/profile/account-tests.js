@@ -54,17 +54,12 @@ var testSubscriptionsFromTenant = [
 var testArmSubscriptionClient = {
   subscriptions: {
     list: function (callback) {
-      callback(null, { subscriptions: testSubscriptionsFromTenant });
+      callback(null, testSubscriptionsFromTenant);
     }
   },
   tenants: {
     list: function (callback) {
-      callback(null, {
-        tenantIds: testTenantIds.map(function (id) {
-          return { tenantId: id };
-        })
-      }
-      );
+      callback(null, testTenantIds.map(function (id) { return { tenantId: id }; }) );
     }
   }
 };
@@ -132,8 +127,10 @@ describe('account', function () {
     UserTokenCredentials: function UserTokenCredentials() { }
   };
   
+  var armEndPointUsed;
   var resourceClient = {
-    createResourceSubscriptionClient: function (cred, armEndpoint) {
+    SubscriptionClient: function (cred, armEndpoint) {
+      armEndPointUsed = armEndpoint;
       return testArmSubscriptionClient;
     }
   };
@@ -183,6 +180,10 @@ describe('account', function () {
       subscriptions.forEach(function (s) {
         s.tenantId.should.equal(testTenantIds[0]);
       });
+    });
+
+    it('should pass in right arm endpoint', function () {
+      armEndPointUsed.should.equal(environment.resourceManagerEndpointUrl);
     });
   });
   
@@ -268,33 +269,33 @@ describe('account loading with logon error', function () {
   });
 });
 
-describe('account', function () {
+describe('account add for service principal', function () {
   var dataPassedToAcquireServicePrincipalToken;
   var servicePrincipalId = 'https://myapp';
-  var servicePrincipalKey = 'mysecret';
+  var secret = 'mysecret';
   var adalAuth = {
-    createServicePrincipalTokenCredentials: function (authConfig, servicePrincipalId, servicePrincipalKey, callback) {
+    createServicePrincipalTokenCredentials: function (authConfig, servicePrincipalId, secretOrCert, callback) {
       dataPassedToAcquireServicePrincipalToken = {
         authConfig: authConfig,
         servicePrincipalId: servicePrincipalId,
-        servicePrincipalKey: servicePrincipalKey
+        secretOrCert: secretOrCert
       };
       return callback(null, sampleAuthContext);
     },
     normalizeUserName: function (name) { return name; }
   };
   var resourceClient = {
-    createResourceSubscriptionClient: function (cred, armEndpoint) {
+    SubscriptionClient: function (cred) {
       return testArmSubscriptionClient;
     }
   };
   var account = new Account(environment, adalAuth, resourceClient, log);
   
-  describe('when load with creds for a service principal', function () {
+  describe('using secret', function () {
     var subscriptions;
     
     beforeEach(function (done) {
-      account.load(servicePrincipalId, servicePrincipalKey, 'fooTenant', { servicePrincipal: true }, function (err, result) {
+      account.load(servicePrincipalId, secret, 'fooTenant', { servicePrincipal: true }, function (err, result) {
         subscriptions = result.subscriptions;
         done();
       });
@@ -303,7 +304,35 @@ describe('account', function () {
     it('should invoke authenticateWithUsernamePassword with correct fields', function () {
       dataPassedToAcquireServicePrincipalToken.authConfig.tenantId.should.equal('fooTenant');
       dataPassedToAcquireServicePrincipalToken.servicePrincipalId.should.equal(servicePrincipalId);
-      dataPassedToAcquireServicePrincipalToken.servicePrincipalKey.should.equal(servicePrincipalKey);
+      dataPassedToAcquireServicePrincipalToken.secretOrCert.should.equal(secret);
+    });
+    
+    it('should return a subscription with expected servicePrincipalId', function () {
+      should.exist(subscriptions[0].user);
+      subscriptions[0].user.name.should.equal(servicePrincipalId);
+    });
+  });
+
+  describe('using certificate and thumbprint', function () {
+    var subscriptions;
+    
+    var cert = {
+      'certificateFile' : 'junk',
+      'thumbprint': 'junk'
+    };
+
+    beforeEach(function (done) {
+      account.load(servicePrincipalId, cert, 'fooTenant', { servicePrincipal: true }, function (err, result) {
+        subscriptions = result.subscriptions;
+        done();
+      });
+    });
+    
+    it('should invoke authenticateWithUsernamePassword with correct fields', function () {
+      dataPassedToAcquireServicePrincipalToken.authConfig.tenantId.should.equal('fooTenant');
+      dataPassedToAcquireServicePrincipalToken.servicePrincipalId.should.equal(servicePrincipalId);
+      dataPassedToAcquireServicePrincipalToken.secretOrCert.certificateFile.should.equal(cert.certificateFile);
+      dataPassedToAcquireServicePrincipalToken.secretOrCert.thumbprint.should.equal(cert.thumbprint);
     });
     
     it('should return a subscription with expected servicePrincipalId', function () {

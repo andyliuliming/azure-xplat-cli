@@ -7,7 +7,7 @@ exports.getMockedProfile = function () {
 
   newProfile.addSubscription(new profile.Subscription({
     id: '4004a9fd-d58e-48dc-aeb2-4a4aec58606f',
-    name: 'Free Trial',
+    name: 'AAD_POLICY_ADMINISTRATION_SERVICE_TEST_CLI',
     user: {
       name: 'user@domain.example',
       type: 'user'
@@ -22,54 +22,52 @@ exports.getMockedProfile = function () {
 };
 
 exports.setEnvironment = function() {
-  process.env['AZURE_AD_TEST_USER_PRINCIPAL_NAME'] = 'testUserAuto@rbacCliTest.onmicrosoft.com';
+  process.env['AZURE_AD_TEST_USER_PRINCIPAL_NAME'] = 'testUserAuto1@rbacCliTest.onmicrosoft.com';
   process.env['AZURE_AD_TEST_PASSWORD'] = 'Pa$$w0rd';
   process.env['AZURE_AD_TEST_GROUP_NAME'] = 'testgroupauto';
   process.env['AZURE_ARM_TEST_LOCATION'] = 'West US';
-  process.env['AZURE_AD_TEST_SP_DISPLAY_NAME'] = 'mytestapprandomauto00123456';
+  process.env['AZURE_AD_TEST_SP_DISPLAY_NAME'] = 'mytestapprandomauto0012345';
 };
 
 exports.scopes = [[function (nock) { 
 var result = 
 nock('http://management.azure.com:443')
-  .get('/subscriptions/4004a9fd-d58e-48dc-aeb2-4a4aec58606f/providers/Microsoft.Authorization/roleDefinitions/43367f6e-e106-480d-a448-2a393ea5eb21?api-version=2015-07-01')
+  .get('//subscriptions/4004a9fd-d58e-48dc-aeb2-4a4aec58606f/providers/Microsoft.Authorization/roleDefinitions/43367f6e-e106-480d-a448-2a393ea5eb21?api-version=2015-07-01')
   .reply(404, "{\"error\":{\"code\":\"RoleDefinitionDoesNotExist\",\"message\":\"The specified role definition with ID '43367f6e-e106-480d-a448-2a393ea5eb21' does not exist.\"}}", { 'cache-control': 'no-cache',
   pragma: 'no-cache',
   'content-length': '152',
   'content-type': 'application/json; charset=utf-8',
   expires: '-1',
-  'x-ms-request-id': 'c77cbbec-3975-4eac-b728-65583808f3de',
-  'x-ms-gateway-service-instanceid': 'PASFE_IN_3',
+  'x-ms-request-id': 'b87f37a5-08b8-4f82-996d-ac01771aaec9',
+  'x-ms-gateway-service-instanceid': 'PASFE_IN_0',
   'x-content-type-options': 'nosniff',
   'strict-transport-security': 'max-age=31536000; includeSubDomains',
-  'set-cookie': [ 'x-ms-gateway-slice=productionb; path=/' ],
   server: 'Microsoft-IIS/8.5',
   'x-powered-by': 'ASP.NET',
-  'x-ms-ratelimit-remaining-subscription-reads': '14977',
-  'x-ms-correlation-request-id': '9596ee5d-503d-4183-9a67-9fade0c1e1c7',
-  'x-ms-routing-request-id': 'WESTUS:20151028T222850Z:9596ee5d-503d-4183-9a67-9fade0c1e1c7',
-  date: 'Wed, 28 Oct 2015 22:28:50 GMT',
+  'x-ms-ratelimit-remaining-subscription-reads': '14983',
+  'x-ms-correlation-request-id': '2c59c994-7915-4cd6-8256-c5a948673b53',
+  'x-ms-routing-request-id': 'WESTUS:20160311T033815Z:2c59c994-7915-4cd6-8256-c5a948673b53',
+  date: 'Fri, 11 Mar 2016 03:38:14 GMT',
   connection: 'close' });
  return result; },
 function (nock) { 
 var result = 
 nock('https://management.azure.com:443')
-  .get('/subscriptions/4004a9fd-d58e-48dc-aeb2-4a4aec58606f/providers/Microsoft.Authorization/roleDefinitions/43367f6e-e106-480d-a448-2a393ea5eb21?api-version=2015-07-01')
+  .get('//subscriptions/4004a9fd-d58e-48dc-aeb2-4a4aec58606f/providers/Microsoft.Authorization/roleDefinitions/43367f6e-e106-480d-a448-2a393ea5eb21?api-version=2015-07-01')
   .reply(404, "{\"error\":{\"code\":\"RoleDefinitionDoesNotExist\",\"message\":\"The specified role definition with ID '43367f6e-e106-480d-a448-2a393ea5eb21' does not exist.\"}}", { 'cache-control': 'no-cache',
   pragma: 'no-cache',
   'content-length': '152',
   'content-type': 'application/json; charset=utf-8',
   expires: '-1',
-  'x-ms-request-id': 'c77cbbec-3975-4eac-b728-65583808f3de',
-  'x-ms-gateway-service-instanceid': 'PASFE_IN_3',
+  'x-ms-request-id': 'b87f37a5-08b8-4f82-996d-ac01771aaec9',
+  'x-ms-gateway-service-instanceid': 'PASFE_IN_0',
   'x-content-type-options': 'nosniff',
   'strict-transport-security': 'max-age=31536000; includeSubDomains',
-  'set-cookie': [ 'x-ms-gateway-slice=productionb; path=/' ],
   server: 'Microsoft-IIS/8.5',
   'x-powered-by': 'ASP.NET',
-  'x-ms-ratelimit-remaining-subscription-reads': '14977',
-  'x-ms-correlation-request-id': '9596ee5d-503d-4183-9a67-9fade0c1e1c7',
-  'x-ms-routing-request-id': 'WESTUS:20151028T222850Z:9596ee5d-503d-4183-9a67-9fade0c1e1c7',
-  date: 'Wed, 28 Oct 2015 22:28:50 GMT',
+  'x-ms-ratelimit-remaining-subscription-reads': '14983',
+  'x-ms-correlation-request-id': '2c59c994-7915-4cd6-8256-c5a948673b53',
+  'x-ms-routing-request-id': 'WESTUS:20160311T033815Z:2c59c994-7915-4cd6-8256-c5a948673b53',
+  date: 'Fri, 11 Mar 2016 03:38:14 GMT',
   connection: 'close' });
  return result; }]];

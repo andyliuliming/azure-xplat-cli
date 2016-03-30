@@ -6,17 +6,16 @@ exports.getMockedProfile = function () {
   var newProfile = new profile.Profile();
 
   newProfile.addSubscription(new profile.Subscription({
-    id: 'bfb5e0bf-124b-4d0c-9352-7c0a9f4d9948',
-    managementCertificate: {
-      key: 'mockedKey',
-      cert: 'mockedCert'
-    },
-    name: 'CollaberaInteropTest',
+    id: '2c224e7e-3ef5-431d-a57b-e71f4662e3a6',
+    name: 'Node CLI Test',
     user: {
       name: 'user@domain.example',
       type: 'user'
     },
+    tenantId: '72f988bf-86f1-41af-91ab-2d7cd011db47',
+    state: 'Enabled',
     registeredProviders: [],
+    _eventsCount: '1',
     isDefault: true
   }, newProfile.environments['AzureCloud']));
 
@@ -24,44 +23,44 @@ exports.getMockedProfile = function () {
 };
 
 exports.setEnvironment = function() {
-  process.env['AZURE_VM_TEST_LOCATION'] = 'eastus';
+  process.env['AZURE_VM_TEST_LOCATION'] = 'westus';
 };
 
 exports.scopes = [[function (nock) { 
 var result = 
 nock('http://management.azure.com:443')
-  .get('/subscriptions/bfb5e0bf-124b-4d0c-9352-7c0a9f4d9948/resourceGroups/xplatTestGCreatePubip/providers/Microsoft.Network/publicIPAddresses/armpublicip1946/?api-version=2015-05-01-preview')
-  .reply(200, "{\r\n  \"name\": \"armpublicip1946\",\r\n  \"id\": \"/subscriptions/bfb5e0bf-124b-4d0c-9352-7c0a9f4d9948/resourceGroups/xplatTestGCreatePubip/providers/Microsoft.Network/publicIPAddresses/armpublicip1946\",\r\n  \"etag\": \"W/\\\"9e64f5ee-1f1e-449d-886a-e0bb00094458\\\"\",\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"ipAddress\": \"191.237.22.55\",\r\n    \"publicIPAllocationMethod\": \"Static\",\r\n    \"idleTimeoutInMinutes\": 6,\r\n    \"dnsSettings\": {\r\n      \"domainNameLabel\": \"dnstestpubip\",\r\n      \"fqdn\": \"dnstestpubip.eastus.cloudapp.azure.com\",\r\n      \"reverseFqdn\": \"dnstestpubip13195.eastus.cloudapp.azure.com\"\r\n    }\r\n  },\r\n  \"location\": \"eastus\"\r\n}", { 'cache-control': 'no-cache',
+  .get('/subscriptions/2c224e7e-3ef5-431d-a57b-e71f4662e3a6/resourceGroups/xplat-test-public-ip/providers/Microsoft.Network/publicIPAddresses/test-ip?api-version=2015-06-15')
+  .reply(200, "{\r\n  \"name\": \"test-ip\",\r\n  \"id\": \"/subscriptions/2c224e7e-3ef5-431d-a57b-e71f4662e3a6/resourceGroups/xplat-test-public-ip/providers/Microsoft.Network/publicIPAddresses/test-ip\",\r\n  \"etag\": \"W/\\\"ea755b00-702a-445e-9bcd-2716c9967526\\\"\",\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\",\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"tag1\": \"aaa\",\r\n    \"tag2\": \"bbb\",\r\n    \"tag3\": \"ccc\"\r\n  },\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\": \"5300a273-46c7-4415-97b9-d681db2f338d\",\r\n    \"publicIPAllocationMethod\": \"Dynamic\",\r\n    \"idleTimeoutInMinutes\": 15,\r\n    \"dnsSettings\": {\r\n      \"domainNameLabel\": \"bar-domain9250\",\r\n      \"fqdn\": \"bar-domain9250.westus.cloudapp.azure.com\"\r\n    }\r\n  }\r\n}", { 'cache-control': 'no-cache',
   pragma: 'no-cache',
-  'content-length': '648',
+  'content-length': '722',
   'content-type': 'application/json; charset=utf-8',
   expires: '-1',
-  etag: 'W/"9e64f5ee-1f1e-449d-886a-e0bb00094458"',
-  'x-ms-request-id': 'd23fef66-68a5-4215-9df4-8efc1db6563b',
+  etag: 'W/"ea755b00-702a-445e-9bcd-2716c9967526"',
+  'x-ms-request-id': 'ab24e90c-26b3-445f-9fcd-43d164e3a0c7',
   'strict-transport-security': 'max-age=31536000; includeSubDomains',
   server: 'Microsoft-HTTPAPI/2.0, Microsoft-HTTPAPI/2.0',
-  'x-ms-ratelimit-remaining-subscription-reads': '14959',
-  'x-ms-correlation-request-id': '5ac5d332-467f-4775-ae5e-ecebbe1306e3',
-  'x-ms-routing-request-id': 'SOUTHEASTASIA:20150521T080128Z:5ac5d332-467f-4775-ae5e-ecebbe1306e3',
-  date: 'Thu, 21 May 2015 08:01:27 GMT',
+  'x-ms-ratelimit-remaining-subscription-reads': '14998',
+  'x-ms-correlation-request-id': '83400179-1493-4c29-bb82-ae6a92ead408',
+  'x-ms-routing-request-id': 'WESTEUROPE:20160217T080544Z:83400179-1493-4c29-bb82-ae6a92ead408',
+  date: 'Wed, 17 Feb 2016 08:05:44 GMT',
   connection: 'close' });
  return result; },
 function (nock) { 
 var result = 
 nock('https://management.azure.com:443')
-  .get('/subscriptions/bfb5e0bf-124b-4d0c-9352-7c0a9f4d9948/resourceGroups/xplatTestGCreatePubip/providers/Microsoft.Network/publicIPAddresses/armpublicip1946/?api-version=2015-05-01-preview')
-  .reply(200, "{\r\n  \"name\": \"armpublicip1946\",\r\n  \"id\": \"/subscriptions/bfb5e0bf-124b-4d0c-9352-7c0a9f4d9948/resourceGroups/xplatTestGCreatePubip/providers/Microsoft.Network/publicIPAddresses/armpublicip1946\",\r\n  \"etag\": \"W/\\\"9e64f5ee-1f1e-449d-886a-e0bb00094458\\\"\",\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"ipAddress\": \"191.237.22.55\",\r\n    \"publicIPAllocationMethod\": \"Static\",\r\n    \"idleTimeoutInMinutes\": 6,\r\n    \"dnsSettings\": {\r\n      \"domainNameLabel\": \"dnstestpubip\",\r\n      \"fqdn\": \"dnstestpubip.eastus.cloudapp.azure.com\",\r\n      \"reverseFqdn\": \"dnstestpubip13195.eastus.cloudapp.azure.com\"\r\n    }\r\n  },\r\n  \"location\": \"eastus\"\r\n}", { 'cache-control': 'no-cache',
+  .get('/subscriptions/2c224e7e-3ef5-431d-a57b-e71f4662e3a6/resourceGroups/xplat-test-public-ip/providers/Microsoft.Network/publicIPAddresses/test-ip?api-version=2015-06-15')
+  .reply(200, "{\r\n  \"name\": \"test-ip\",\r\n  \"id\": \"/subscriptions/2c224e7e-3ef5-431d-a57b-e71f4662e3a6/resourceGroups/xplat-test-public-ip/providers/Microsoft.Network/publicIPAddresses/test-ip\",\r\n  \"etag\": \"W/\\\"ea755b00-702a-445e-9bcd-2716c9967526\\\"\",\r\n  \"type\": \"Microsoft.Network/publicIPAddresses\",\r\n  \"location\": \"westus\",\r\n  \"tags\": {\r\n    \"tag1\": \"aaa\",\r\n    \"tag2\": \"bbb\",\r\n    \"tag3\": \"ccc\"\r\n  },\r\n  \"properties\": {\r\n    \"provisioningState\": \"Succeeded\",\r\n    \"resourceGuid\": \"5300a273-46c7-4415-97b9-d681db2f338d\",\r\n    \"publicIPAllocationMethod\": \"Dynamic\",\r\n    \"idleTimeoutInMinutes\": 15,\r\n    \"dnsSettings\": {\r\n      \"domainNameLabel\": \"bar-domain9250\",\r\n      \"fqdn\": \"bar-domain9250.westus.cloudapp.azure.com\"\r\n    }\r\n  }\r\n}", { 'cache-control': 'no-cache',
   pragma: 'no-cache',
-  'content-length': '648',
+  'content-length': '722',
   'content-type': 'application/json; charset=utf-8',
   expires: '-1',
-  etag: 'W/"9e64f5ee-1f1e-449d-886a-e0bb00094458"',
-  'x-ms-request-id': 'd23fef66-68a5-4215-9df4-8efc1db6563b',
+  etag: 'W/"ea755b00-702a-445e-9bcd-2716c9967526"',
+  'x-ms-request-id': 'ab24e90c-26b3-445f-9fcd-43d164e3a0c7',
   'strict-transport-security': 'max-age=31536000; includeSubDomains',
   server: 'Microsoft-HTTPAPI/2.0, Microsoft-HTTPAPI/2.0',
-  'x-ms-ratelimit-remaining-subscription-reads': '14959',
-  'x-ms-correlation-request-id': '5ac5d332-467f-4775-ae5e-ecebbe1306e3',
-  'x-ms-routing-request-id': 'SOUTHEASTASIA:20150521T080128Z:5ac5d332-467f-4775-ae5e-ecebbe1306e3',
-  date: 'Thu, 21 May 2015 08:01:27 GMT',
+  'x-ms-ratelimit-remaining-subscription-reads': '14998',
+  'x-ms-correlation-request-id': '83400179-1493-4c29-bb82-ae6a92ead408',
+  'x-ms-routing-request-id': 'WESTEUROPE:20160217T080544Z:83400179-1493-4c29-bb82-ae6a92ead408',
+  date: 'Wed, 17 Feb 2016 08:05:44 GMT',
   connection: 'close' });
  return result; }]];

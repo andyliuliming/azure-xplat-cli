@@ -46,6 +46,7 @@ var testLocation;
 var testResourceGroup;
 
 var cacheName;
+var storageName;
 var newCacheName;
 var testSize;
 var testSku;
@@ -66,9 +67,9 @@ describe('arm', function () {
       testResourceGroup = process.env.AZURE_ARM_TEST_RESOURCE_GROUP;
       testSize = 'C2';
       testSku = 'Basic';
-      testMaxMemoryPolicy = 'AllKeysRandom';
       testNewMaxMemoryPolicy = 'VolatileLRU';
       cacheName = suite.generateId(cachePrefix, knownNames);
+      storageName = cacheName;
       newCacheName = suite.generateId(cachePrefix, knownNames);
 
       suite.execute('group create %s --location %s --json', testResourceGroup, testLocation, function () {
@@ -99,7 +100,7 @@ describe('arm', function () {
         var cacheJson = JSON.parse(result.text);
         cacheJson.name.should.be.equal(cacheName);
 
-        suite.execute('rediscache create --name %s --resource-group %s --location %s --size %s --sku %s --max-memory-policy %s --enable-non-ssl-port --json', newCacheName, testResourceGroup, testLocation, testSize, testSku, testMaxMemoryPolicy, function (result) {
+        suite.execute('rediscache create --name %s --resource-group %s --location %s --size %s --sku %s --enable-non-ssl-port --json', newCacheName, testResourceGroup, testLocation, testSize, testSku, function (result) {
           result.exitStatus.should.be.equal(0);
           var newCacheJson = JSON.parse(result.text);
           newCacheJson.name.should.be.equal(newCacheName);
@@ -157,6 +158,20 @@ describe('arm', function () {
 
     it.skip('Renew Key command should work', function (done) {
       suite.execute('rediscache renew-key --name %s --resource-group %s --json', cacheName, testResourceGroup, function (result) {
+        result.exitStatus.should.be.equal(0);
+        done();
+      });
+    });
+
+    it.skip('Set Diagnostics command should work', function (done) {
+      suite.execute('rediscache set-diagnostics --name %s --resource-group %s --storage-account-name %s --storage-account-resource-group %s --json', cacheName, testResourceGroup, storageName, testResourceGroup, function (result) {
+        result.exitStatus.should.be.equal(0);
+        done();
+      });
+    });
+
+    it.skip('Delete Diagnostics command should work', function (done) {
+      suite.execute('rediscache delete-diagnostics --name %s --resource-group %s --json', cacheName, testResourceGroup, function (result) {
         result.exitStatus.should.be.equal(0);
         done();
       });
